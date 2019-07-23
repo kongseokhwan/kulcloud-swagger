@@ -1,0 +1,380 @@
+swagger: "2.0"
+info:
+  title: "PRISM NBAPI"
+  version: "1.0.0"
+  description: "This is a PRISM NBAPI API Client module."  
+  contact:
+    email: "apiteam@swagger.io"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+
+host: "203.255.254.105:8181"
+basePath: "/1.0"
+tags:
+- name: "router" #1
+  description: "PRISM Router Manager"
+- name: "interface" #2
+  description: "PRISM Interface Manager"
+- name: "protocol" #3
+  description: "PRISM Protocol Manager"
+- name: "sroute" #4
+  description: "PRISM Static Route Manager"
+- name: "nexthop" #5
+  description: "PRISM Next Hop Manager"
+- name: "vrrp" #6
+  description: "PRISM VRRP Manager"
+- name: "multicast" #7
+  description: "PRISM Multicast(pimd) Manager"
+- name: "vxlan" #8
+  description: "PRISM VxLAN Manager"
+- name: "acl" #9
+  description: "PRISM ACL Manager"
+- name: "qos" #10
+  description: "PRISM QoS Manager"
+- name: "dhcp" #11
+  description: "PRISM DHCP Manager"
+schemes:
+- "http"
+paths:
+  /prism/router:
+    post: #1.1
+      tags:
+      - "router"
+      summary: "Create PRISM router"
+      description: "지정된 테넌트 이름으로 라우터 생성."
+      operationId: "createRouter"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "TenantName"
+        in: "body"
+        schema:
+          $ref: "#/definitions/TenantName"
+        description: "라우터가 속하게 될 테넌트의 이름."
+        required: true
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/TenantName"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /prism/router/{tenant_name}:
+    delete: #1.2
+      tags:
+      - "router"
+      summary: "Delete PRISM router"
+      description: "지정된 테넌트 이름의 라우터 삭제."
+      operationId: "deleteRouter"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "tenant_name"
+        in: "path"
+        description: "삭제할 테넌트 이름"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/TenantName"
+        400:
+          description: "Router not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /prism/router/all:
+    get: #1.3
+      tags:
+      - "router"
+      #summary: "Get all PRISM router"
+      description: "모든 라우터를 조회"
+      operationId: "getAllRouter"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/RoutersObject"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+
+#########################################
+# Definitions
+#########################################
+definitions:
+  # [Res] Success
+  SuccessMessage:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+  # [Res] Used in Error response body
+  ErrorMessage:
+    type: "object"
+    properties:
+      error:
+        type: "string"
+
+  PortGroupName:
+    type: "object"
+    properties:
+      group_name:
+        type: "string"
+
+  DpidinfoObject:
+    type: "object"
+    propeties:
+      dpid:
+        type: "string"
+      ports:
+        type: "array"
+        items:
+          type: "string"
+
+  DpidinfoObject2:
+    type: "object"
+    propeties:
+      dpid:
+        type: "string"
+      ports:
+        type: "array"
+        items:
+          type: "string"
+      group_id:
+        type: "string"
+
+  PortgroupObject:
+    type: "object"
+    properties:
+      group_name:
+        type: "string"
+      dpid_info:
+        items:
+          $ref: "#/definitions/DpidinfoObject"
+      type:
+        type: "sring"
+
+  GetDpidinfoObject:
+    type: "object"
+    propeties:
+      dpid_info:
+        items:
+          $ref: "#/definitions/DpidinfoObject2"
+      type:
+        type: "string"
+      group_name:
+        type: "string"      
+  
+  GetGroupsObject:
+    type: "object"
+    propeties:
+      groups:
+        items:
+          $ref: "#/definitions/GetDpidinfoObject"
+      type:
+        type: "string"        
+      group_name:
+        type: "string"
+  
+  GetGroupObject:
+    type: "object"
+    propeties:
+      group:
+        $ref: "#/definitions/GetDpidinfoObject"    
+
+  RateLimitObject:
+    type: "object"
+    properties:
+      limit_name:
+        type: "string"
+      type:
+        type: "string" 
+      rate:
+        type: "string"
+      burst_size:
+        type: "string"
+  
+  RateLimitMerterId:
+    type: "object"
+    properties:
+      mid:
+        type: "string"
+      dpid:
+        type: "string"
+
+  RateLimitRespObject:
+    type: "object"
+    properties:
+      limit_name:
+        type: "string"
+      type:
+        type: "string" 
+      rate:
+        type: "string"
+      burst_size:
+        type: "string"
+      meter_id:
+        items:
+          $ref: "#/definitions/RateLimitMerterId"
+
+  RateLimitRespList:
+    type: "object"
+    properties:
+      rate_limits:
+        items:
+          $ref: "#/definitions/RateLimitRespObject"     
+
+  RateLimitResp:
+    type: "object"
+    properties:
+      rate_limit:
+        $ref: "#/definitions/RateLimitRespObject" 
+
+  RateLimitName:
+    type: "object"
+    properties:
+      limit_name:
+        type: "string"   
+  
+  MatchObject:
+    type: "object"
+    properties:
+      match:
+        type: "string"
+      value:
+        type: "string"
+  
+  FilterInnerObject:
+    type: "object"
+    properties:
+      filter_name:
+        type: "string"
+      match_value:
+        items:
+          $ref: "#/definitions/MatchObject"
+
+  FilterObject:
+    type: "object"
+    properties:
+      filter:
+        $ref: "#/definitions/FilterInnerObject"
+
+  FilterName:
+    type: "object"
+    properties:
+      filter_name:
+        type: "string"
+
+  FilterRespList:
+    type: "object"
+    properties:
+      filters:
+        items:
+          $ref: "#/definitions/FilterObject"
+  
+  FilterResp:
+    type: "object"
+    properties:
+      filter:
+        $ref: "#/definitions/FilterObject"
+  
+  PolicyActionObject:
+    type: "object"
+    properties:
+      action:
+        type: "string"
+      value:
+        type: "string"
+      
+  PolicyObject:
+    type: "object"
+    properties:
+      in_port:
+        type: "string"
+      eg_port:
+        type: "string"
+      filter:
+        type: "array"
+        items:
+          type: "string"
+      rate_limit:
+        type: "string"
+      policy_action:
+        items:
+          $ref: "PolicyActionObject"
+      policy_name:
+        type: "string"      
+
+  PolicyName:
+    type: "object"
+    properties:
+      filter_name:
+        type: "string"
+
+  PolicyRespList:
+    type: "object"
+    properties:
+      policies:
+        items:
+          $ref: "#/definitions/PolicyObject"
+  
+  PolicyResp:
+    type: "object"
+    properties:
+      policy:
+        $ref: "#/definitions/PolicyObject"
+
+  PolicyStatisticsObject:
+    type: "object"
+    properties:
+      filter_name:
+        type: "string"
+      pps:
+        type: "string"
+      byte_count:
+        type: "string"        
+      bps:
+        type: "string"
+      pkt_count:
+        type: "string"
+      aliave:
+        type: "string"           
+
+  PolicyStatisticsList:
+    type: "object"
+    properties:
+      policy_name:
+        type: "string"
+      policy_stats:
+        items:
+          $ref:"#/definitions/PolicyStatisticsObject"
+
+  ALLPolicyStatisticsRespList:
+    type: "object"
+    properties:
+      policies_stats:
+        items:
+          $ref: "#/definitions/PolicyStatisticsList"
+
+
+
+

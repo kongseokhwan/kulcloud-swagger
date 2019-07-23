@@ -1,0 +1,2787 @@
+swagger: "2.0"
+info:
+  title: "PRISM NBAPI"
+  version: "1.0.0"
+  description: "This is a PRISM NBAPI API Client module."
+  #termsOfService: "http://swagger.io/terms/"
+  #contact:
+  #  email: "apiteam@swagger.io"
+  #license:
+  #  name: "Apache 2.0"
+  #  url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+#host: "61.252.55.197:8181"
+#host: "203.255.254.108:47171"
+host: "203.255.254.105:8181"
+basePath: "/1.0"
+tags:
+- name: "router" #1
+  description: "PRISM Router Manager"
+  #externalDocs:
+  #  description: "Find out more"
+  #  url: "http://swagger.io"
+- name: "interface" #2
+  description: "PRISM Interface Manager"
+- name: "protocol" #3
+  description: "PRISM Protocol Manager"
+- name: "sroute" #4
+  description: "PRISM Static Route Manager"
+- name: "nexthop" #5
+  description: "PRISM Next Hop Manager"
+- name: "vrrp" #6
+  description: "PRISM VRRP Manager"
+- name: "multicast" #7
+  description: "PRISM Multicast(pimd) Manager"
+- name: "vxlan" #8
+  description: "PRISM VxLAN Manager"
+- name: "acl" #9
+  description: "PRISM ACL Manager"
+- name: "qos" #10
+  description: "PRISM QoS Manager"
+- name: "dhcp" #11
+  description: "PRISM DHCP Manager"
+schemes:
+- "http"
+paths:
+  /prism/router:
+    post: #1.1
+      tags:
+      - "router"
+      summary: "Create PRISM router"
+      description: "지정된 테넌트 이름으로 라우터 생성."
+      operationId: "createRouter"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "TenantName"
+        in: "body"
+        schema:
+          $ref: "#/definitions/TenantName"
+        description: "라우터가 속하게 될 테넌트의 이름."
+        required: true
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/TenantName"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /prism/router/{tenant_name}:
+    delete: #1.2
+      tags:
+      - "router"
+      summary: "Delete PRISM router"
+      description: "지정된 테넌트 이름의 라우터 삭제."
+      operationId: "deleteRouter"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "tenant_name"
+        in: "path"
+        description: "삭제할 테넌트 이름"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/TenantName"
+        400:
+          description: "Router not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /prism/router/all:
+    get: #1.3
+      tags:
+      - "router"
+      #summary: "Get all PRISM router"
+      description: "모든 라우터를 조회"
+      operationId: "getAllRouter"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/RoutersObject"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /prism/interface/physical:
+    get: #2.1
+      tags:
+      - "interface"
+      #summary: "Get all PRISM physical interface"
+      description: "사용할 수 있는 모든 물리 인터페이스의 정보 조회."
+      operationId: "getAllPhyInterface"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/PhysicalsObject"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /prism/interface/physical/{tenant_name}:
+    get: #2.2
+      tags:
+      - "interface"
+      summary: "Get all PRISM physical interface"
+      description: "테넌트에서 사용할 수 있는 모든 물리 인터페이스의 정보 조회.\n(현재 사용할 수 있는 인터페이스만 조회됨)\n(사용할 수 있는 인터페이스가 없으면 아무것도 표시되지 않음)"
+      operationId: "getAllPhyInterfaceInTenant"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "tenant_name"
+        in: "path"
+        description: "테넌트 명"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/PhysicalsObject"
+        304:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/PhysicalsObject"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /prism/interface:
+    post: #2.3(Physical/bridge/bond Interface)
+      tags:
+      - "interface"
+      summary: "Add router interface"
+      description: "라우터 인터페이스 추가."
+      operationId: "addRouterInterface"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "RouterInterface"
+        in: "body"
+        schema:
+         $ref: "#/definitions/RouterInterface"
+        description: "인터페이스 정보."
+        required: true
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/InterfaceName"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /prism/interface/{interface_name}:
+    delete: #2.4
+      tags:
+      - "interface"
+      summary: "Delete router interface"
+      description: "라우터 인터페이스 제거."
+      operationId: "delRouterInterface"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "interface_name"
+        in: "path"
+        required: true
+        type: "string"
+        description: "삭제할 인터페이스 이름"
+      - name: "TenantName"
+        in: "body"
+        schema:
+         $ref: "#/definitions/TenantName"
+        description: "특정 테넌트 내의 인터페이스 제거 시 해당 테넌트의 이름.(Optional)"
+        required: false
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/InterfaceName"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /prism/interface/all:
+    get: #2.5
+      tags:
+      - "interface"
+      #summary: "Get all PRISM physical interface"
+      description: "사용할 수 있는 모든 물리 인터페이스의 상세 정보 조회."
+      operationId: "getAllPrismInterface"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/InterfacesObject"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /prism/interface/brief:
+    get: #2.6
+      tags:
+      - "interface"
+      description: ""
+      operationId: "getAllPrismInterfaceBrief"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/InterfacesBriefObject"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /prism/interface/inuse:
+    get: #2.7 (추가된 API)
+      tags:
+      - "interface"
+      description: "각 테넌트에서 현재 사용중인 PRISM Interface만 추려서 조회"
+      operationId: "getAllInusedPrismInterface"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/InterfacesBriefObject"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /prism/interface/{interface_name}/tenant/{tenant_name}:
+    get: #2.7 --> #2.8
+      tags:
+      - "interface"
+      description: ""
+      operationId: "getOnePrismInterface"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "interface_name"
+        in: "path"
+        required: true
+        type: "string"
+        description: "인터페이스 이름"
+      - name: "tenant_name"
+        in: "path"
+        required: true
+        type: "string"
+        description: "테넌트의 이름"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/InterfaceObject"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /prism/interface/all/tenant/{tenant_name}:
+    get: #2.8 --> #2.9
+      tags:
+      - "interface"
+      description: ""
+      operationId: "getAllPrismInterfaceInTenant"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "tenant_name"
+        in: "path"
+        required: true
+        type: "string"
+        description: "테넌트의 이름"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/InterfacesObject"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /prism/interface/brief/tenant/{tenant_name}:
+    get: #2.10(추가)
+      tags:
+      - "interface"
+      description: ""
+      operationId: "getPrismInterfaceBriefInTenant"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "tenant_name"
+        in: "path"
+        required: true
+        type: "string"
+        description: "테넌트의 이름"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/InterfacesBriefObject"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /prism/interface/inuse/tenant/{tenant_name}:
+    get: #2.11(추가)
+      tags:
+      - "interface"
+      description: ""
+      operationId: "getInUsePrismInterfaceInTenant"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "tenant_name"
+        in: "path"
+        required: true
+        type: "string"
+        description: "테넌트의 이름"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/InterfacesBriefObject"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /prism/interface/{interface_name}/add:
+    put: #2.9 --> #2.12
+      tags:
+      - "interface"
+      description: ""
+      operationId: "updatePrismInterfaceAdd"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "interface_name"
+        in: "path"
+        required: true
+        type: "string"
+        description: "인터페이스 이름"
+      - name: "UpdateInfo"
+        in: "body"
+        schema:
+          $ref: "#/definitions/UpdateIntfInfo"
+        description: "업데이트 할 정보"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/InterfaceName"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /prism/interface/{interface_name}/rem:
+    put: #2.10 --> #2.13
+      tags:
+      - "interface"
+      description: ""
+      operationId: "updatePrismInterfaceRemove"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "interface_name"
+        in: "path"
+        required: true
+        type: "string"
+        description: "인터페이스 이름"
+      - name: "UpdateInfo"
+        in: "body"
+        schema:
+          $ref: "#/definitions/UpdateIntfInfo"
+        description: "업데이트 할 정보"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/InterfaceName"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /prism/routing/{tenant_name}:
+    put: #3.1(put) #3.3(get)
+      tags:
+      - "protocol"
+      description: ""
+      operationId: "confPrismRoutingProtocol"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "tenant_name"
+        in: "path"
+        required: true
+        type: "string"
+        description: "테넌트의 이름"
+      - name: "ConfRoutingProtocolInfo"
+        in: "body"
+        schema:
+          $ref: "#/definitions/ConfRoutingProtocolInfo"
+        description: "업데이트 할 정보"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/RoutingObject"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+    get:
+      tags:
+      - "protocol"
+      description: ""
+      operationId: "getOnePrismRoutingProtocol"
+      produces:
+      - "application/json"
+      parameters:
+        - name: "tenant_name"
+          in: "path"
+          required: true
+          type: "string"
+          description: "테넌트의 이름"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/RoutingObject"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /prism/routing/all:
+    get: #3.2
+      tags:
+      - "protocol"
+      description: ""
+      operationId: "getAllPrismRoutingProtocol"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/RoutingsObject"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /prism/route:
+    post: #4.1
+      tags:
+      - "sroute"
+      description: "Static route 추가"
+      operationId: "addStaticRoute"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "RouteInfo"
+        in: "body"
+        schema:
+         $ref: "#/definitions/RouteInfo"
+        description: "Static route 정보."
+        required: true
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/SuccessMessage"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /prism/route/{tenant_name}:
+    get: #4.2
+      tags:
+      - "sroute"
+      description: "Static route 정보 조회"
+      operationId: "getStaticRoute"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "tenant_name"
+        in: "path"
+        required: true
+        type: "string"
+        description: "테넌트의 이름"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/RoutesObject"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /prism/route/{tenant_name}/{host_ip}/{host_mask}:
+    delete: #4.3
+      tags:
+      - "sroute"
+      summary: "Delete static route"
+      description: "Static route 삭제"
+      operationId: "delStaticRoute"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "tenant_name"
+        in: "path"
+        required: true
+        type: "string"
+        description: "테넌트의 이름"
+      - name: "host_ip"
+        in: "path"
+        required: true
+        type: "string"
+        description: "삭제하려는 네트워크 대역의 IP(e.g. 127.0.0.0). \ndefault gw를 삭제하려면 0.0.0.0 입력."
+      - name: "host_mask"
+        in: "path"
+        required: true
+        type: "string"
+        description: "삭제하려는 네트워크 대역의 mask값(24)."
+      responses:
+        200:
+          description: "Successful operation"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /prism/route/{tenant_name}/{host_ip}/{host_mask}/{interface}:
+    delete: #4.4
+      tags:
+      - "sroute"
+      summary: "Delete static route"
+      description: "Static route 삭제"
+      operationId: "delStaticRouteWithIntfName"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "tenant_name"
+        in: "path"
+        required: true
+        type: "string"
+        description: "테넌트의 이름"
+      - name: "host_ip"
+        in: "path"
+        required: true
+        type: "string"
+        description: "삭제하려는 네트워크 대역의 IP(e.g. 127.0.0.0). \ndefault gw를 삭제하려면 0.0.0.0 입력."
+      - name: "host_mask"
+        in: "path"
+        required: true
+        type: "string"
+        description: "삭제하려는 네트워크 대역의 mask값(e.g. 24)."
+      - name: "interface"
+        in: "path"
+        required: true
+        type: "string"
+        description: "대상 인터페이스 이름"
+      responses:
+        200:
+          description: "Successful operation"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /prism/nh/{tenant_name}:
+    get: #5.1
+      tags:
+      - "nexthop"
+      description: "Next Hop(Neighbor) 정보 조회.\ntenant를 지정해서 그 tenant의 모든 next hop 정보(ip, mac, 연결된 interface)를 가져온다."
+      operationId: "getNextHop"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "tenant_name"
+        in: "path"
+        required: true
+        type: "string"
+        description: "Next Hop 정보를 가져오고 싶은 tenant 이름.\nall 입력시, 모든 tenant의 Next Hop 정보를 가져온다."
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/NeighborsInfo"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /prism/vrrp/instance:
+    post: #6.1.1
+      tags:
+      - "vrrp"
+      description: "Create VRRP"
+      operationId: "createVRRP"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "VrrpInfo"
+        in: "body"
+        schema:
+         $ref: "#/definitions/VrrpInfo"
+        description: "VRRP 정보."
+        required: true
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/VrrpInfo"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /prism/vrrp/instance/tenant/{tenant_name}:
+    post: #6.1.2
+      tags:
+      - "vrrp"
+      description: "Create VRRP in tenant"
+      operationId: "createVrrpInTenant"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "tenant_name"
+        in: "path"
+        required: true
+        type: "string"
+        description: "테넌트의 이름"
+      - name: "VrrpInfo"
+        in: "body"
+        schema:
+         $ref: "#/definitions/VrrpInfo"
+        description: "인터페이스 정보."
+        required: true
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/VrrpInfo"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /prism/vrrp/instance/all:
+    get: #6.2.1
+      tags:
+      - "vrrp"
+      description: "Get all VRRP information"
+      operationId: "getAllVrrpInfo"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/VrrpsObject"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /prism/vrrp/instance/all/tenant/{tenant_name}:
+    get: #6.2.2
+      tags:
+      - "vrrp"
+      description: "Get all VRRP information in tenant"
+      operationId: "getAllVrrpInfoInTenant"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "tenant_name"
+        in: "path"
+        required: true
+        type: "string"
+        description: "테넌트의 이름"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/VrrpsObject"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /prism/vrrp/instance/{vrrp_name}:
+    get: #6.3.1
+      tags:
+      - "vrrp"
+      description: "Get one VRRP information"
+      operationId: "getOneVrrpInfo"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "vrrp_name"
+        in: "path"
+        required: true
+        type: "string"
+        description: "VRRP 인스턴스 이름"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/VrrpObject"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+    delete: #6.4.1
+      tags:
+      - "vrrp"
+      description: "Delete VRRP"
+      operationId: "deleteVrrpo"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "vrrp_name"
+        in: "path"
+        required: true
+        type: "string"
+        description: "VRRP 인스턴스 이름"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/VrrpNameObject"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+    put: #6.5.1
+      tags:
+      - "vrrp"
+      description: "Update VRRP"
+      operationId: "updateVrrp"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "vrrp_name"
+        in: "path"
+        required: true
+        type: "string"
+        description: "VRRP 인스턴스 이름"
+      - name: "VrrpUpdateInfo"
+        in: "body"
+        schema:
+         $ref: "#/definitions/VrrpUpdateInfo"
+        description: "VRRP 정보."
+        required: true
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/VrrpUpdateInfo"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /prism/vrrp/instance/{vrrp_name}/tenant/{tenant_name}:
+    get: #6.3.2
+      tags:
+      - "vrrp"
+      description: "Get one VRRP information in tenant"
+      operationId: "getOneVrrpInfoInTenant"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "vrrp_name"
+        in: "path"
+        required: true
+        type: "string"
+        description: "VRRP 인스턴스 이름"
+      - name: "tenant_name"
+        in: "path"
+        required: true
+        type: "string"
+        description: "테넌트의 이름"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/VrrpObject"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+    delete: #6.4.2
+      tags:
+      - "vrrp"
+      description: "Delete VRRP in tenant"
+      operationId: "deleteVrrpInTenant"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "vrrp_name"
+        in: "path"
+        required: true
+        type: "string"
+        description: "VRRP 인스턴스 이름"
+      - name: "tenant_name"
+        in: "path"
+        required: true
+        type: "string"
+        description: "테넌트의 이름"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/VrrpNameObject"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+    put: #6.5.2
+      tags:
+      - "vrrp"
+      description: "Update VRRP in tenant"
+      operationId: "updateVrrpInTenant"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "vrrp_name"
+        in: "path"
+        required: true
+        type: "string"
+        description: "VRRP 인스턴스 이름"
+      - name: "tenant_name"
+        in: "path"
+        required: true
+        type: "string"
+        description: "테넌트의 이름"
+      - name: "VrrpUpdateInfo"
+        in: "body"
+        schema:
+         $ref: "#/definitions/VrrpUpdateInfo"
+        description: "VRRP 정보."
+        required: true
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/VrrpUpdateInfo"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  #7.Multicast
+  /prism/multicast:
+    post: #7.1.1
+      tags:
+      - "multicast"
+      description: "Create Multicast(pimd)"
+      operationId: "createMulticast"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "MulticastInfo"
+        in: "body"
+        schema:
+         $ref: "#/definitions/MulticastInfo"
+        description: "Multicast 정보."
+        required: true
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/MulticastInfo"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+    get: #7.2.1
+      tags:
+      - "multicast"
+      description: "Get all Multicast information"
+      operationId: "getAllMulticastInfo"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/MulticastObject"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+    delete: #7.3.1
+      tags:
+      - "multicast"
+      description: "Delete Multicast"
+      operationId: "deleteMulticast"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/MulticastObject"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+    put: #7.4.1
+      tags:
+      - "multicast"
+      description: "Update Multicast"
+      operationId: "updateMulticast"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "MulticastObject"
+        in: "body"
+        schema:
+         $ref: "#/definitions/MulticastObject"
+        description: "Multicast 정보."
+        required: true
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/MulticastObject"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /prism/multicast/tenant/{tenant_name}:
+    post: #7.1.2
+      tags:
+      - "multicast"
+      description: "Create Multicast in tenant"
+      operationId: "createMulticastInTenant"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "tenant_name"
+        in: "path"
+        required: true
+        type: "string"
+        description: "테넌트의 이름"
+      - name: "MulticastInfo"
+        in: "body"
+        schema:
+         $ref: "#/definitions/MulticastInfo"
+        description: "Multicast 정보."
+        required: true
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/MulticastInfo"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+    get: #7.2.2
+      tags:
+      - "multicast"
+      description: "Get all Multicast information in tenant"
+      operationId: "getAllMulicastInfoInTenant"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "tenant_name"
+        in: "path"
+        required: true
+        type: "string"
+        description: "테넌트의 이름"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/MulticastObject"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+    delete: #7.3.2
+      tags:
+      - "multicast"
+      description: "Delete Multicast in tenant"
+      operationId: "deleteMulticastInTenant"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "tenant_name"
+        in: "path"
+        required: true
+        type: "string"
+        description: "테넌트의 이름"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/MulticastObject"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+    put: #7.4.2
+      tags:
+      - "multicast"
+      description: "Update Multicast in tenant"
+      operationId: "updateMulticastInTenant"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "tenant_name"
+        in: "path"
+        required: true
+        type: "string"
+        description: "테넌트의 이름"
+      - name: "MulticastObject"
+        in: "body"
+        schema:
+         $ref: "#/definitions/MulticastObject"
+        description: "VRRP 정보."
+        required: true
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/MulticastObject"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  #8.VxLAN
+  /prism/vxlan:
+    post: #8.1
+      tags:
+      - "vxlan"
+      description: "Create VxLAN"
+      operationId: "createVxlan"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "VxlanInfo"
+        in: "body"
+        schema:
+         $ref: "#/definitions/VxlanCreationInfo"
+        description: "VxLAN 정보."
+        required: true
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/SuccessMessage"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /prism/vxlan/{vxlan_id}:
+    get: #8.2
+      tags:
+      - "vxlan"
+      description: "Get VxLAN information"
+      operationId: "getVxlanInfo"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "vxlan_id"
+        in: "path"
+        required: true
+        type: "string"
+        description: "정보를 가져오고자 하는 VxLAN ID. all로 지정하면 모든 VxLAN 터널링 정보를 가져옴"
+      - name: "tenant_name"
+        in: "query"
+        required: true
+        type: string
+        description: "정보를 가져오고자 하는 테넌트 이름"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/VxlanGetInfo"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+    delete: #8.3
+      tags:
+      - "vxlan"
+      description: "Delete VxLAN"
+      operationId: "deleteVxlan"
+      #produces:
+      #- "application/json"
+      parameters:
+      - name: "vxlan_id"
+        in: "path"
+        required: true
+        type: "string"
+        description: "삭제하려고 하는 VxLAN ID."
+      - name: "tenant_name"
+        in: "query"
+        required: true
+        type: string
+        description: "VxLAN 터널링 설정을 삭제하려고 하는 테넌트 이름"
+      responses:
+        200:
+          description: "Successful operation"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /prism/vxlan/host:
+    post: #8.4
+      tags:
+      - "vxlan"
+      description: "Add VxLAN Host"
+      operationId: "addVxlanHost"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "VxlanHostInfo"
+        in: "body"
+        schema:
+         $ref: "#/definitions/VxlanHostCreationInfo"
+        description: "VxLAN 정보."
+        required: true
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/SuccessMessage"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /prism/vxlan/host/{vxlan_id}:
+    get: #8.5
+      tags:
+      - "vxlan"
+      description: "Get VxLAN Host information"
+      operationId: "getVxlanHostInfo"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "vxlan_id"
+        in: "path"
+        required: true
+        type: "string"
+        description: "VxLAN Host 정보를 가져오고자 하는 VxLAN ID."
+      - name: "tenant_name"
+        in: "query"
+        required: true
+        type: string
+        description: "VxLAN Host 정보를 가져오고자 하는 테넌트 이름"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/VxlanHostGetInfo"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+    delete: #8.6
+      tags:
+      - "vxlan"
+      description: "Delete VxLAN Host\n query에 mac 혹은 dpid & port 를 사용해서 host를 찾아 삭제함."
+      operationId: "deleteVxlanHost"
+      #produces:
+      #- "application/json"
+      parameters:
+      - name: "vxlan_id"
+        in: "path"
+        required: true
+        type: "string"
+        description: "Host 정보를 삭제하려고 하는 터널링의 VxLAN ID."
+      - name: "tenant_name"
+        in: "query"
+        required: true
+        type: string
+        description: "VxLAN 터널링 host 설정을 삭제하려고 하는 테넌트 이름"
+      - name: "mac"
+        in: "query"
+        required: false
+        type: string
+        description: "삭제하려고 하는 host의 mac address."
+      - name: "dpid"
+        in: "query"
+        required: false
+        type: string
+        description: "삭제하려고 하는 host가 연결된 switch dpid(port와 함께 입력되어야 함)."
+      - name: "port"
+        in: "query"
+        required: false
+        type: string
+        description: "삭제하려고 하는 host가 연결된 switch port number(dpid와 함께 입력되어야 함)."
+      responses:
+        200:
+          description: "Successful operation"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  #9.ACL
+  /acl/ipv4:
+    post: #9.1
+      tags:
+      - "acl"
+      description: "Create ACL IPv4"
+      operationId: "createAclIpv4"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "AclInfo"
+        in: "body"
+        schema:
+         $ref: "#/definitions/AclInfo"
+        description: "ACL 정보."
+        required: true
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/ResData"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /acl/ipv4/{acl_number}:
+    get: #9.2
+      tags:
+      - "acl"
+      description: "Get ACL IPv4 information"
+      operationId: "getAclIpv4Info"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "acl_number"
+        in: "path"
+        required: true
+        type: "string"
+        description: "정보를 가져올 ACL entry number. all 일 경우, 모든 ACL entry의 정보를 가져옴"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/AclInfoData"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+    delete: #9.3
+      tags:
+      - "acl"
+      description: "Delete ACL IPv4"
+      operationId: "deleteAclIpv4"
+      #produces:
+      #- "application/json"
+      parameters:
+      - name: "acl_number"
+        in: "path"
+        required: true
+        type: "string"
+        description: "삭제할 ACL entry number"
+      responses:
+        200:
+          description: "Successful operation"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /acl/ipv6:
+    post: #9.4
+      tags:
+      - "acl"
+      description: "Create ACL IPv6"
+      operationId: "createAclIpv6"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "AclInfo"
+        in: "body"
+        schema:
+         $ref: "#/definitions/AclInfo"
+        description: "ACL 정보."
+        required: true
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/ResData"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /acl/ipv6/{acl_number}:
+    get: #9.5
+      tags:
+      - "acl"
+      description: "Get ACL IPv6 information"
+      operationId: "getAclIpv6Info"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "acl_number"
+        in: "path"
+        required: true
+        type: "string"
+        description: "정보를 가져올 ACL entry number. all 일 경우, 모든 ACL entry의 정보를 가져옴"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/AclInfoData"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+    delete: #9.6
+      tags:
+      - "acl"
+      description: "Delete ACL IPv6"
+      operationId: "deleteAclIpv6"
+      #produces:
+      #- "application/json"
+      parameters:
+      - name: "acl_number"
+        in: "path"
+        required: true
+        type: "string"
+        description: "삭제할 ACL entry number"
+      responses:
+        200:
+          description: "Successful operation"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  #10.QoS
+  /qos/rule:
+    post: #10.1
+      tags:
+      - "qos"
+      description: "Create QoS Rule"
+      operationId: "createQosRule"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "QosRuleInfo"
+        in: "body"
+        schema:
+         $ref: "#/definitions/QosRuleInfo"
+        description: "QoS Rule 정보."
+        required: true
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/ResData"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /qos/rule/{rule_id}:
+    get: #10.2
+      tags:
+      - "qos"
+      description: "Get QoS Rule information"
+      operationId: "getQosRuleInfo"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "rule_id"
+        in: "path"
+        required: true
+        type: "string"
+        description: "정보를 가져오고 싶은 QoS Rule ID. all 일 경우, 모든 QoS Rule 정보를 가져옴"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/RuleInfo"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+    delete: #9.6
+      tags:
+      - "qos"
+      description: "Delete QoS Rule"
+      operationId: "deleteQosRule"
+      #produces:
+      #- "application/json"
+      parameters:
+      - name: "rule_id"
+        in: "path"
+        required: true
+        type: "string"
+        description: "삭제하려는 QoS Rule ID"
+      responses:
+        200:
+          description: "Successful operation"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /qos/entry:
+    post: #10.4
+      tags:
+      - "qos"
+      description: "Create QoS entry"
+      operationId: "createQosEntry"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "QosEntryInfo"
+        in: "body"
+        schema:
+         $ref: "#/definitions/QosEntryInfo"
+        description: "QoS Entry 정보."
+        required: true
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/ResData"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /qos/entry/{id}:
+    delete: #10.5
+      tags:
+      - "qos"
+      description: "Delete QoS Entry"
+      operationId: "deleteQosEntry"
+      #produces:
+      #- "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        type: "string"
+        description: "삭제하려는 QoS Entry ID"
+      responses:
+        200:
+          description: "Successful operation"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+    get: #10.6
+      tags:
+      - "qos"
+      description: "Get QoS Entry information"
+      operationId: "getQosEntryInfo"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        type: "string"
+        description: "정보를 가져올 QoS entry number. all 일 경우, 모든 QoS entry 정보를 가져옴"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/EntryInfo"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  #11.DHCP
+  /prism/dhcp:
+    post: #10.1
+      tags:
+      - "dhcp"
+      description: "Run DHCP Server"
+      operationId: "runDhcpServer"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "DhcpInfo"
+        in: "body"
+        schema:
+         $ref: "#/definitions/DhcpInfo"
+        description: "DHCP 정보."
+        required: true
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/Result"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /prism/dhcp/{tenant_name}/{intf_name}:
+    get: #11.2
+      tags:
+      - "dhcp"
+      description: "Get DHCP Server information"
+      operationId: "getQosDhcpServerInfo"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "tenant_name"
+        in: "path"
+        required: true
+        type: "string"
+        description: "Tenant 이름"
+      - name: "intf_name"
+        in: "path"
+        required: true
+        type: "string"
+        description: "DHCP Server가 listening 하는 interface 이름"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/DhcpSvrInfo"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+    delete: #11.3
+      tags:
+      - "dhcp"
+      description: "Terminate DHCP Server"
+      operationId: "terminateDhcpServer"
+      parameters:
+      - name: "tenant_name"
+        in: "path"
+        required: true
+        type: "string"
+        description: "Tenant 이름"
+      - name: "intf_name"
+        in: "path"
+        required: true
+        type: "string"
+        description: "DHCP Server가 listening 하는 interface 이름"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/Result"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+  /prism/dhcp/{intf_name}/host/{command}:
+    put: #11.4
+      tags:
+      - "dhcp"
+      description: "Update DHCP Server"
+      operationId: "updateDhcpServer"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "intf_name"
+        in: "path"
+        required: true
+        type: "string"
+        description: "DHCP Server가 listening 하는 interface 이름"
+      - name: "command"
+        in: "path"
+        required: true
+        type: "string"
+        #enum: ["add", "rem"]
+        description: "DHCP Server에 host 추가시 add, 삭제시 rem"
+      - name: "DhcpUpdateInfo"
+        in: "body"
+        schema:
+         $ref: "#/definitions/DhcpUpdateInfo"
+        description: ""
+        required: true
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/Result"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+#########################################
+# Definitions
+#########################################
+definitions:
+  # [Res] Success
+  SuccessMessage:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+  # [Res] Used in Error response body
+  ErrorMessage:
+    type: "object"
+    properties:
+      error:
+        type: "string"
+  #1.3(res)
+  RoutersObject:
+    type: "object"
+    properties:
+      routers:
+        type: "array"
+        items:
+          $ref: "#/definitions/TenantName"
+  #1.1(both) #1.2(res) #1.3(res.def.RoutersObject) #2.4(req)
+  TenantName:
+    type: "object"
+    properties:
+      tenant_name:
+        type: "string"
+  #2.1(res) #2.2(res)
+  PhysicalsObject:
+    type: "object"
+    properties:
+      physicals:
+        type: "array"
+        items:
+          $ref: "#/definitions/InterfaceInfo"
+  #2.1(res.def.PhysicalsObject)
+  InterfaceInfo:
+    type: "object"
+    properties:
+      port:
+        type: "string"
+      name:
+        type: "string"
+      dpid:
+        type: "string"
+      default_vrf:
+        type: "string"
+  #2.3(res) #2.4(res) #2.9(res)
+  InterfaceName:
+    type: "object"
+    properties:
+      interface_name:
+        type: "string"
+  #2.3(req)
+  RouterInterface:
+    type: "object"
+    properties:
+      name:
+        description: "인터페이스 이름\n- type이 physical일 경우, Get All PRISM Physical Interface API로 가져올 수 있는 인터페이스만 사용이 가능함\n- type이 bridge일 경우, 앞에 pr이 반드시 붙고 뒤에는 마음대로 하면 된다\n- type이 bond일 경우, 되도록이면 pr-bond1 식으로 앞에 pr이 붙는 이름으로 사용"
+        type: "string"
+      type:
+        description: "인터페이스 타입\nphysical, bridge, bond 중 선택가능"
+        type: "string"
+        enum:
+        - "physical"
+        - "bridge"
+        - "bond"
+      ip:
+        description: "인터페이스에 설정할 IP\n- IPv4면 1.0.0.1/24 식으로 netmask 까지 입력\n- IPv6면 3333::3/64 식으로 netmask까지 입력"
+        type: "array"
+        items: 
+          type: "string"
+      tenant_name:
+        type: "string"
+      translate:
+        description: "on | off | null 테넌트간 통신을 위한 루프백 설정\ntrue를 전송 시 xvid.cfg에 해당 정보 저장. 그 외는 무시\n(type이 bridge인 경우 사용)"
+        type: "string"
+        enum:
+        - "on"
+        - "off"
+        - "null"
+      stp:
+        description: "on | off | null stp 적용 설정. default는 null\n(type이 bridge인 경우 사용)"
+        type: "string"
+        enum:
+        - "on"
+        - "off"
+        - "null"
+      vlan_id:
+        description: "Bridge 인터페이스에 설정할 vlan 번호\n(type이 bridge인 경우 사용)"
+        type: "integer"
+        format: "int32"
+      br_intfs:
+        description: "Bridge 인터페이스에 포함시킬 인터페이스들 이름과 타입 list"
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            name:
+              type: "string"
+            type:
+              type: "string"
+      slave_intfs:
+        description: "bond 인터페이스에 포함되는 인터페이스들 이름 list\n(Get All Prism Physical Interface API로 가져올 수 있는 인터페이스만 사용이 가능함.)\n(slave_intfs 가 없는 경우 bond 인터페이스를 생성하지 않음)"
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            name:
+              type: "string"
+    required:
+    - "name"
+    - "type"
+  #2.5(res)
+  InterfacesObject:
+    type: "object"
+    properties:
+      interfaces:
+        type: "array"
+        items:
+          $ref: "#/definitions/InterfaceInfoDetail"
+  #2.5(res.def.InterfacesObject)
+  InterfaceInfoDetail:
+    description: "Get All PRISM Interface 요청의 res body에 사용"
+    type: "object"
+    properties:
+      port:
+        type: "string"
+      ip_address:
+        type: "array"
+        items:
+          type: "string"
+      intf_name:
+        description: "인터페이스 이름"
+        type: "string"
+      tenant_name:
+        description: "테넌트 이름"
+        type: "string"
+      hw_address:
+        description: "MAC 주소"
+        type: "string"
+      type:
+        description: "인터페이스 타입"
+        type: "string"
+      vlan_id:
+        description: "vlan 아이디"
+        type: "string"
+      translate:
+        description: "translate 상태(on | off | None)"
+        type: "string"
+        enum:
+        - "on"
+        - "off"
+        - "None"
+      stp:
+        description: "stp 상태(on | off | None)"
+        type: "string"
+        enum:
+        - "on"
+        - "off"
+        - "None"
+      stats:
+        $ref: "#/definitions/IntfStats"
+  #2.5(res.def.InterfaceInfoDetail)
+  IntfStats:
+    type: "object"
+    properties:
+      collisions:
+        type: "integer"
+        format: "int64"
+      multicast:
+        type: "integer"
+        format: "int64"
+      rx_bytes:
+        type: "integer"
+        format: "int64"
+      rx_compressed:
+        type: "integer"
+        format: "int64"
+      rx_crc_errors:
+        type: "integer"
+        format: "int64"
+      rx_dropped:
+        type: "integer"
+        format: "int64"
+      rx_errors:
+        type: "integer"
+        format: "int64"
+      rx_fifo_errors:
+        type: "integer"
+        format: "int64"
+      rx_frame_errors:
+        type: "integer"
+        format: "int64"
+      rx_length_errors:
+        type: "integer"
+        format: "int64"
+      rx_missed_errors:
+        type: "integer"
+        format: "int64"
+      rx_over_errors:
+        type: "integer"
+        format: "int64"
+      rx_packets:
+        type: "integer"
+        format: "int64"
+      tx_aborted_errors:
+        type: "integer"
+        format: "int64"
+      tx_bytes:
+        type: "integer"
+        format: "int64"
+      tx_carrier_errors:
+        type: "string"
+      tx_compressed:
+        type: "integer"
+        format: "int64"
+      tx_dropped:
+        type: "integer"
+        format: "int64"
+      tx_errors:
+        type: "integer"
+        format: "int64"
+      tx_fifo_errors:
+        type: "integer"
+        format: "int64"
+      tx_heartbeat_errors:
+        type: "integer"
+        format: "int64"
+      tx_packets:
+        type: "integer"
+        format: "int64"
+      tx_window_errors:
+        type: "integer"
+        format: "int64"
+  #2.6(res)
+  InterfacesBriefObject:
+    type: "object"
+    properties:
+      interfaces:
+        type: "array"
+        items:
+          $ref: "#/definitions/InterfaceBrief"
+  #2.6(res.def.Interfaces)
+  InterfaceBrief:
+    type: "object"
+    properties:
+      tenant_name:
+        type: "string"
+      intf_name:
+        type: "string"
+      type:
+        type: "string"
+      state:
+        type: "string"
+      hw_address:
+        type: "string"
+      ip_address:
+        type: "array"
+        items: 
+          type: "string"
+      vlan_id:
+        type: "integer"
+        format: "int32"
+      lag_id:
+        type: "integer"
+        format: "int32"
+      sub_intfs:
+        type: "array"
+        items:
+          $ref: "#/definitions/SubInterface"
+      master_intf:
+        type: "string"
+      translate:
+        type: "string"
+  #2.6 #2.7(res.def.InterfaceBrief)
+  SubInterface:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      type:
+        type: "string"
+  #2.7(res)-->#2.8
+  InterfaceObject:
+    type: "object"
+    properties:
+      interface:
+        $ref: "#/definitions/InterfaceInfoDetail"
+  #2.9(req) --> #2.12, #2.13
+  UpdateIntfInfo:
+    type: "object"
+    properties:
+      ip:
+        type: "array"
+        items:
+          type: "string"
+      tenant_name:
+        type: "string"
+      vrf_op:
+        type: "string"
+      br_intfs:
+        type: "array"
+        items:
+          type: "string"
+      slave_intfs:
+        type: "array"
+        items:
+          type: "string"
+  #3.1(req)
+  ConfRoutingProtocolInfo:
+    type: "object"
+    properties:
+      protocol:
+        type: "string"
+        enum: ["bgp", "ospf", "static"]
+      update:
+        $ref: "#/definitions/SettingInfo"
+      delete:
+        $ref: "#/definitions/SettingInfo"
+      as_id:
+        type: "string"
+  #3.1(req.def.ConfRoutingProtocolInfo)
+  SettingInfo:
+    type: "object"
+    properties:
+      router_id:
+        type: "string"
+      as_id:
+        type: "string"
+      network:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            prefix:
+              type: "string"
+            area:
+              #type: "integer"
+              #format: "int32"
+              type: "string"
+      area:
+        description: "OSPF area를 설정할 때 사용되는  필드로 dict를 인자로 가지는 리스트. 각 dict는 id와 range 필드를 필수로 가진다."
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            id:
+              description: "OSPF area 번호"
+              #type: "integer"
+              #format: "int32"
+              type: "string"
+            range:
+              description: "해당 area가 관리하는 네트워크 대역. 127.0.0.1/24 식으로 입력"
+              type: "string"
+      neighbor:
+        description: "OSPF 라우터의 neighbor를 설정할 때 사용되는 인자. dict를 인자로 가지는 리스트. 각 dict는 neighbor_id 필드를 필수로 가진다."
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            neighbor_ip:
+              description: "neighbor의 IP address"
+              type: "string"
+            remote_as:
+              type: "integer"
+              format: "int32"
+      redistribute:
+        description: "OSPF Redistribute 설정"
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            ip_version:
+              type: "string"
+              enum: ["ipv6", "ipv4"]
+            mode:
+              type: "string"
+              enum: ["babel", "bgp", "connected", "isis", "kernel", "rip", "static"]
+      ipv4_prefix:
+        description: "IP prefix-list 설정"
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            name:
+              type: "string"
+            type:
+              type: "string"
+              enum: ["deny", "permit"]
+            ip_address:
+              type: "string"
+            seq:
+              type: "integer"
+              format: "int64"
+      route_map:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            name:
+              type: "string"
+            type:
+              type: "string"
+              enum: ["deny", "permit"]
+            seq:
+              type: "integer"
+              format: "int64"
+            match:
+              type: "array"
+              items:
+                type: "object"
+                properties:
+                  ipv4_perfix_list:
+                    type: "string"
+  #3.1(res) #3.3(res)
+  RoutingObject:
+    type: "object"
+    properties:
+      routing:
+        $ref: "#/definitions/RoutingProtocolInfo"
+  #3.2(res)
+  RoutingsObject:
+    type: "object"
+    properties:
+      routings:
+        type: "array"
+        items:
+          $ref: "#/definitions/RoutingProtocolInfo"
+  #3.1(res.def.RoutingObject) #3.2(res.def.RoutingsObject) #3.3(res.def.RoutingObject)
+  RoutingProtocolInfo:
+    type: "object"
+    properties:
+      bgp:
+        type: "object"
+        properties:
+          router_id:
+            type: "string"
+          redistribute:
+            type: "array"
+            items:
+              type: "object"
+              properties:
+                ip_version:
+                  type: "string"
+                  enum: ["ipv6", "ipv4"]
+                mode:
+                  type: "string"
+                  enum: ["babel", "bgp", "connected", "isis", "kernel", "rip", "static"]
+          network:
+            type: "array"
+            items:
+              type: "object"
+              properties:
+                prefix:
+                  type: "string"
+                area:
+                  type: "string"
+          neighbor:
+            description: "OSPF 라우터의 neighbor를 설정할 때 사용되는 인자. dict를 인자로 가지는 리스트. 각 dict는 neighbor_id 필드를 필수로 가진다."
+            type: "array"
+            items:
+              type: "object"
+              properties:
+                neighbor_ip:
+                  description: "neighbor의 IP address"
+                  type: "string"
+                remote_as:
+                  type: "integer"
+                  format: "int32"
+          as_id:
+            type: "string"
+      tenant_name:
+        type: "string"
+      ospf:
+        type: "object"
+        properties:
+          router_id:
+            type: "string"
+          redistribute:
+            type: "array"
+            items:
+              type: "object"
+              properties:
+                ip_version:
+                  type: "string"
+                  enum: ["ipv6", "ipv4"]
+                mode:
+                  type: "string"
+                  enum: ["babel", "bgp", "connected", "isis", "kernel", "rip", "static"]
+          network:
+            type: "array"
+            items:
+              type: "object"
+              properties:
+                prefix:
+                  type: "string"
+                area:
+                  type: "string"
+          neighbor:
+            type: "array"
+            items:
+              type: "object"
+              properties:
+                neighbor:
+                  type: "string"
+          area:
+            type: "array"
+            items:
+              type: "object"
+              properties:
+                range:
+                  description: "해당 area가 관리하는 네트워크 대역. 127.0.0.1/24 식으로 입력"
+                  type: "string"
+                area:
+                  description: "OSPF area 주소"
+                  type: "string"
+  #4.1(req)
+  RouteInfo:
+    type: "object"
+    properties:
+      tenant_name:
+        type: "string"
+      route:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            host_ip:
+              type: "string"
+            next_hop:
+              type: "string"
+            interface:
+              type: "string"
+            protocol:
+              type: "string"
+  #4.2(res)
+  RoutesObject:
+    type: "object"
+    properties:
+      routes:
+        type: "array"
+        items:
+          $ref: "#/definitions/RouteInfo"
+  #5.1(res)
+  NeighborsInfo:
+    type: "object"
+    properties:
+      neighbors:
+        type: "array"
+        items:
+          properties:
+            tenant_name:
+              type: "string"
+            neighbor:
+              type: "array"
+              items:
+                properties:
+                  host_ip:
+                    type: "string"
+                    description: "Next IP의 MAC 주소(e.g. 10.0.0.1)"
+                  host_mac:
+                    type: "string"
+                    description: "Next Hop의 MAC 주소(e.g. 11:22:33:44:55:66)"
+                  interface:
+                    type: "string"
+                    description: "Next Hop과 연결된 인터페이스 이름"
+                  state:
+                    type: "string"
+                    description: "Next Hop 연결상태"
+  #6.1(both) #6.2(res)
+  VrrpInfo:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      state:
+        type: "string"
+        enum: ["Master", "Backup"]
+      interface:
+        type: "string"
+      vr_id:
+        type: "string"
+      priority:
+        type: "string"
+      advert_int:
+        type: "string"
+      auth_type:
+        type: "string"
+        enum: ["PASS", "AH"]
+      auth_pass:
+        type: "string"
+      vips:
+        type: "array"
+        items:
+          type: "string"
+      notify_master:
+        type: "string"
+      notify_backup:
+        type: "string"
+      notify_fault:
+        type: "string"
+  #6.2(res)
+  VrrpsObject:
+    type: "object"
+    properties:
+      vrrps:
+        type: "array"
+        items:
+          $ref: "#/definitions/VrrpInfo"
+  #6.3(res)
+  VrrpObject:
+    type: "object"
+    properties:
+      vrrp:
+        $ref: "#/definitions/VrrpInfo"
+  #6.4(res)
+  VrrpNameObject:
+    type: "object"
+    properties:
+      vrrp_name:
+        type: "string"
+  #6.5(both) #왠지 4.1꺼랑 name 하나 차이인데 필요없을듯도..
+  VrrpUpdateInfo:
+    type: "object"
+    properties:
+      state:
+        type: "string"
+        enum: ["Master", "Backup"]
+      interface:
+        type: "string"
+      vr_id:
+        type: "string"
+      priority:
+        type: "string"
+      advert_int:
+        type: "string"
+      auth_type:
+        type: "string"
+        enum: ["PASS", "AH"]
+      auth_pass:
+        type: "string"
+      vips:
+        type: "array"
+        items:
+          type: "string"
+      notify_master:
+        type: "string"
+      notify_backup:
+        type: "string"
+      notify_fault:
+        type: "string"
+  #7.1(both) #7.2(res)
+  MulticastInfo:
+    type: "object"
+    properties:
+      df_route_dist:
+        type: "string"
+      df_route_met:
+        type: "string"
+      phyint:
+        type: "object"
+        properties:
+          ifname:
+            type: "string"
+          state:
+            type: "string"
+            enum: ["ENABLE", "DISABLE"]
+          dr_priority:
+            type: "string"
+          ttl_threshold:
+            type: "string"
+          distance:
+            type: "string"
+          metric:
+            type: "string"
+          altnet:
+            type: "string"
+          scope:
+            type: "string"
+      rp_addr:
+        type: "object"
+        properties:
+          ipaddress:
+            type: "string"
+          group_address:
+            type: "string"
+      rp_candi:
+        type: "object"
+        properties:
+          priority:
+            type: "string"
+          time:
+            type: "string"
+          group_pre:
+            type: "array"
+            items:
+              type: "object"
+              properties:
+                ipaddress:
+                  type: "string"
+      bsr_candi:
+        type: "object"
+        properties:
+          ifname:
+            type: "string"
+          priority:
+            type: "string"
+      spt_threshold:
+        type: "object"
+        properties:
+          rate:
+            type: "string"
+          packets:
+            type: "string"
+          interval:
+            type: "string"
+  #7.2(res)
+  MulticastObject:
+    type: "object"
+    properties:
+      multicast:
+        $ref: "#/definitions/MulticastInfo"
+  #8.1(req)
+  VxlanCreationInfo:
+    type: "object"
+    properties:
+      tenant_name:
+        type: "string"
+        description: "VxLAN 터널링을 추가하고자 하는 테넌트 이름"
+      vxlan_id:
+        type: "integer"
+        format: "int32"
+        description: "VxLAN ID"
+      tunnel_intf_name:
+        type: "string"
+        description: "VxLAN 터널링에 사용할 인터페이스 이름(PRISM bridge 인터페이스만 사용 가능)."
+      remote_ip:
+        type: "string"
+        description: "VxLAN 터널링 endpoint IP"
+  #8.2(res)
+  VxlanGetInfo:
+    type: object
+    properties:
+      vxlan_info:
+        type: array
+        items:
+          type: object
+          properties:
+            vxlan_id:
+              type: integer
+              format: int32
+              description: VxLAN ID
+            tunnel_intf_name:
+              type: string
+              description: VxLAN 터널링에 사용하는 인터페이스 이름
+            hosts:
+              type: object
+              properties:
+                port:
+                  type: integer
+                  format: int32
+                  description: Host가 연결된 Switch의 port
+                dpid:
+                  type: string
+                  description: Host가 연결된 Switch의 dpid
+  #8.4(req)
+  VxlanHostCreationInfo:
+    type: object
+    properties:
+      tenant_name:
+        type: string
+        description: VxLAN 터널링을 추가하고자 하는 테넌트 이름
+      vxlan_id:
+        type: integer
+        format: int32
+        description: VxLAN ID
+      hosts:
+        type: array
+        items:
+          type: object
+          properties:
+            mac:
+              type: string
+              description: Host mac address
+            port:
+              type: integer
+              format: int32
+              description: Host와 연결된 switch의 port의 번호. Host가 Controller가 관리하는 switch와 연결되어 있을때 사용(Optional).
+            dpid:
+              type: string
+              description: Host와 연결된 swtich의 port 번호. host가 Controller가 관리하는 switch와 연결되어 있을 때 사용(Optional).
+            ip_address:
+              type: string
+              description: 해당 VxLAN 터널링으로 연결된 Host가 외부(external)에 있을 경우, external node의 IP address. Host가 외부에 있을때 사용(Optional).
+  #8.5(res)
+  VxlanHostGetInfo:
+    type: object
+    properties:
+      hosts:
+        type: array
+        description: VxLAN 터널링 host정보 리스트
+        items:
+          properties:
+            vxlan_id:
+              type: integer
+              format: int32
+              description: VxLAN ID
+            tenant_name:
+              type: string
+              description: VxLAN 터널링이 속한 테넌트 이름
+            mac:
+              type: string
+              description: Host mac address
+            ip_address:
+              type: string
+              description: Host remote ip address. 해당 host가 외부에 존재할 경우에만 response에 포함됨.
+            intf_name:
+              type: string
+              description: Host와 연결된 PRISM interface 이름
+            dpid:
+              type: string
+              description: Host와 연결된 switch의 dpid. 해당 host가 외부에 존재할 경우 none(null).
+            port:
+              type: integer
+              format: int32
+              description: Host와 연결된 switch의 port 번호. 해당 host가 외부에 존재할 경우 none(null).
+  #9.1(req)
+  AclInfo:
+    type: "object"
+    properties:
+      acl_number:
+        type: "integer"
+        format: "int32"
+      match_order:
+        type: "string"
+        enum: ["deny", "permit"]
+      src_host:
+        type: "string"
+      protocol:
+        type: "string"
+        enum: ["tcp", "udp"]
+      dst_host:
+        type: "string"
+  #9.2(res)
+  AclInfoData:
+    type: "object"
+    properties:
+      data:
+        type: "array"
+        items:
+          #$ref: "#/definitions/AclInfo"
+          type: "object"
+          properties:
+            acl_entry:
+              type: "array"
+              items:
+                $ref: "#/definitions/AclEntry"
+            acl_number:
+              type: "string"
+  #9.2(res.def.AclInfoData)
+  AclEntry:
+    type: "object"
+    properties:
+      match_order:
+        type: "string"
+        enum: ["deny", "permit"]
+      src_host:
+        type: "string"
+      protocol:
+        type: "string"
+        enum: ["tcp", "udp"]
+      dst_host:
+        type: "string"
+      src_wildcard:
+        type: "string"
+      flow:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            dpid:
+              type: "string"
+            flow_id:
+              type: "string"
+  #res
+  ResData:
+    type: "object"
+    properties:
+      data:
+        type: "string"
+  #10.1[req]
+  QosRuleInfo:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int32"
+      stats:
+        description: "Meter의 stats 기능 enable"
+        type: "string"
+        enum: ["yes", "no"]
+      mode:
+        type: "integer"
+        enum: [0, 1, 2]
+      burst:
+        type: "string"
+        enum: ["yes", "no"]
+      meter_bands:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            rate:
+              type: "string"
+            burst_size:
+              type: "string"
+  #10
+  RuleInfo:
+    type: "object"
+    properties:
+      rule_id:
+        type: "integer"
+        format: "int32"
+      mode:
+        type: "integer"
+        enum: [0, 1, 2]
+      stats:
+        description: "QoS Rule에 설정된 stats 수집 여부 설정값(yes, no 둘 중 하나의 값)"
+        type: "string"
+        enum: ["yes", "no"]
+      type:
+        type: "string"
+        enum: ["kbps", "bbps"]
+      meter_bands:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            rate:
+              type: "string"
+            burst_size:
+              type: "string"
+  #10.4(req)
+  QosEntryInfo:
+    type: "object"
+    properties:
+      qos_number:
+        type: "integer"
+        format: "int32"
+      tenant:
+        type: "string"
+      in_port:
+        type: "integer"
+        format: "int32"
+      vlan_id:
+        type: "integer"
+        format: "int32"
+      src_ip:
+        type: "string"
+      dst_ip:
+        type: "string"
+      rule_id:
+        type: "string"
+  #10.6(res)
+  EntryInfo:
+    type: "object"
+    properties:
+      data:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            qos_number:
+              type: "integer"
+              format: "int32"
+            in_port:
+              type: "string"
+            vlan_id:
+              type: "string"
+            src_ip:
+              type: "string"
+            dst_ip:
+              type: "string"
+            meter_bands:
+              type: "object"
+              properties:
+                meter_id:
+                  type: "integer"
+                  format: "int32"
+                rate:
+                  type: "string"
+                burst_size:
+                  type: "string"
+            error:
+              type: "string"
+  DhcpInfo:
+    type: "object"
+    properties:
+      tenant_name:
+        type: "string"
+      interface:
+        type: "string"
+      hosts:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            name:
+              type: "string"
+            mac_address:
+              type: "string"
+            ip_address:
+              type: "string"
+  #res
+  Result:
+    type: "object"
+    properties:
+      result:
+        type: "string"
+  #11.2(res)
+  DhcpSvrInfo:
+    type: "object"
+    properties:
+      hosts:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            mac_address:
+              type: "string"
+            name:
+              type: "string"
+            ip_address:
+              type: "string"
+  #11.4(req)
+  DhcpUpdateInfo:
+    type: "object"
+    properties:
+      tenant_name:
+        type: "string"
+      hosts:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            mac_address:
+              type: "string"
+            name:
+              type: "string"
+            ip_address:
+              type: "string"
+    #xml
+    #  name: "Router"
