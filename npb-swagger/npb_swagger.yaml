@@ -1,10 +1,10 @@
 swagger: "2.0"
 info:
   title: "PRISM NBAPI"
-  version: "1.0.0"
+  version: 1.0.0
   description: "This is a PRISM NBAPI API Client module."  
   contact:
-    email: "apiteam@swagger.io"
+    email: "contact@kulcloud.net"
   license:
     name: "Apache 2.0"
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
@@ -66,6 +66,31 @@ paths:
       security: []
   
   /tapping/port/{group_name}:
+    get: #1.4
+      tags:
+      - "port"
+      summary: "Get NPB Port Group"
+      description: "Get NPB Port Group"
+      operationId: "getPortGroup"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "group_name"
+        in: "path"
+        description: "삭제할 포트 그룸 이름"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/GetGroupObject"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+
     delete: #1.2
       tags:
       - "port"
@@ -112,32 +137,6 @@ paths:
           description: "Successful operation"
           schema:
             $ref: "#/definitions/GetGroupsObject"
-        404:
-          description: "API not found"
-          schema:
-            $ref: "#/definitions/ErrorMessage"
-      security: []
-  
-  /tapping/port/{group_name}:
-    get: #1.4
-      tags:
-      - "port"
-      summary: "Get NPB Port Group"
-      description: "Get NPB Port Group"
-      operationId: "getPortGroup"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "group_name"
-        in: "path"
-        description: "삭제할 포트 그룸 이름"
-        required: true
-        type: "string"
-      responses:
-        200:
-          description: "Successful operation"
-          schema:
-            $ref: "#/definitions/GetGroupObject"
         404:
           description: "API not found"
           schema:
@@ -209,6 +208,30 @@ paths:
       security: []
   
   /tapping/rate/limit/{limit_name}:
+    get: #1.4
+      tags:
+      - "ratelimit"
+      summary: "Get NPB Rate Limit"
+      description: "Get NPB Rate Limit"
+      operationId: "getRateLimit"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "limit_name"
+        in: "path"
+        description: "Rate Limit Name"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/RateLimitResp"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []    
     delete: #1.7
       tags:
       - "ratelimit"
@@ -239,55 +262,6 @@ paths:
           schema:
             $ref: "#/definitions/ErrorMessage"
       security: []
-
-  /tapping/rate/limit/all:
-    get: #1.3
-      tags:
-      - "ratelimit"
-      summary: "Get NPB Rate Limit All"
-      description: "Get NPB Rate Limit All"
-      operationId: "getAllRateLimit"
-      produces:
-      - "application/json"
-      parameters: []
-      responses:
-        200:
-          description: "Successful operation"
-          schema:
-            $ref: "#/definitions/RateLimitRespList"
-        404:
-          description: "API not found"
-          schema:
-            $ref: "#/definitions/ErrorMessage"
-      security: []
-  
-  /tapping/rate/limit/{limit_name}:
-    get: #1.4
-      tags:
-      - "ratelimit"
-      summary: "Get NPB Rate Limit"
-      description: "Get NPB Rate Limit"
-      operationId: "getRateLimit"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "group_name"
-        in: "path"
-        description: "Rate Limit Name"
-        required: true
-        type: "string"
-      responses:
-        200:
-          description: "Successful operation"
-          schema:
-            $ref: "#/definitions/RateLimitResp"
-        404:
-          description: "API not found"
-          schema:
-            $ref: "#/definitions/ErrorMessage"
-      security: []
-  
-  /tapping/rate/limit/{limit_name}:
     put: #1.5
       tags:
       - "ratelimit"
@@ -315,6 +289,27 @@ paths:
           description: "Successful operation"
           schema:
             $ref: "#/definitions/SuccessMessage"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+
+  /tapping/rate/limit/all:
+    get: #1.3
+      tags:
+      - "ratelimit"
+      summary: "Get NPB Rate Limit All"
+      description: "Get NPB Rate Limit All"
+      operationId: "getAllRateLimit"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/RateLimitRespList"
         404:
           description: "API not found"
           schema:
@@ -352,6 +347,30 @@ paths:
       security: []
   
   /tapping/filter/service/{filter_name}:
+    get: #1.4
+      tags:
+      - "filter"
+      summary: "Get NPB Filter"
+      description: "Get NPB Filter"
+      operationId: "getFilter"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "filter_name"
+        in: "path"
+        description: "Filter Name"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/FilterResp"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
     delete: #1.7
       tags:
       - "filter"
@@ -382,55 +401,7 @@ paths:
           schema:
             $ref: "#/definitions/ErrorMessage"
       security: []
-
-  /tapping/filter/service/all:
-    get: #1.3
-      tags:
-      - "filter"
-      summary: "Get NPB Filter All"
-      description: "Get NPB Filter All"
-      operationId: "getAllFilter"
-      produces:
-      - "application/json"
-      parameters: []
-      responses:
-        200:
-          description: "Successful operation"
-          schema:
-            $ref: "#/definitions/FilterRespList"
-        404:
-          description: "API not found"
-          schema:
-            $ref: "#/definitions/ErrorMessage"
-      security: []
-  
-  /tapping/filter/service/{filter_name}:
-    get: #1.4
-      tags:
-      - "filter"
-      summary: "Get NPB Filter"
-      description: "Get NPB Filter"
-      operationId: "getFilter"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "filter_name"
-        in: "path"
-        description: "Filter Name"
-        required: true
-        type: "string"
-      responses:
-        200:
-          description: "Successful operation"
-          schema:
-            $ref: "#/definitions/FilterResp"
-        404:
-          description: "API not found"
-          schema:
-            $ref: "#/definitions/ErrorMessage"
-      security: []
-  
-  /tapping/filter/service/{filter_name}:
+    
     put: #1.5
       tags:
       - "filter"
@@ -458,6 +429,27 @@ paths:
           description: "Successful operation"
           schema:
             $ref: "#/definitions/SuccessMessage"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+
+  /tapping/filter/service/all:
+    get: #1.3
+      tags:
+      - "filter"
+      summary: "Get NPB Filter All"
+      description: "Get NPB Filter All"
+      operationId: "getAllFilter"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/FilterRespList"
         404:
           description: "API not found"
           schema:
@@ -495,6 +487,31 @@ paths:
       security: []
   
   /tapping/policy/{policy_name}:
+    get: #1.4
+      tags:
+      - "policy"
+      summary: "Get NPB Policy"
+      description: "Get NPB Policy"
+      operationId: "getPolicy"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "policy_name"
+        in: "path"
+        description: "Policy Name"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/PolicyResp"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+
     delete: #1.7
       tags:
       - "policy"
@@ -525,55 +542,7 @@ paths:
           schema:
             $ref: "#/definitions/ErrorMessage"
       security: []
-
-  /tapping/policy/all:
-    get: #1.3
-      tags:
-      - "policy"
-      summary: "Get NPB Policy All"
-      description: "Get NPB Policy All"
-      operationId: "getAllPolicy"
-      produces:
-      - "application/json"
-      parameters: []
-      responses:
-        200:
-          description: "Successful operation"
-          schema:
-            $ref: "#/definitions/PolicyRespList"
-        404:
-          description: "API not found"
-          schema:
-            $ref: "#/definitions/ErrorMessage"
-      security: []
-  
-  /tapping/policy/{policy_name}:
-    get: #1.4
-      tags:
-      - "policy"
-      summary: "Get NPB Policy"
-      description: "Get NPB Policy"
-      operationId: "getPolicy"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "policy_name"
-        in: "path"
-        description: "Policy Name"
-        required: true
-        type: "string"
-      responses:
-        200:
-          description: "Successful operation"
-          schema:
-            $ref: "#/definitions/PolicyResp"
-        404:
-          description: "API not found"
-          schema:
-            $ref: "#/definitions/ErrorMessage"
-      security: []
-  
-  /tapping/policy/{policy_name}:
+    
     put: #1.5
       tags:
       - "policy"
@@ -601,6 +570,27 @@ paths:
           description: "Successful operation"
           schema:
             $ref: "#/definitions/SuccessMessage"
+        404:
+          description: "API not found"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
+      security: []
+
+  /tapping/policy/all:
+    get: #1.3
+      tags:
+      - "policy"
+      summary: "Get NPB Policy All"
+      description: "Get NPB Policy All"
+      operationId: "getAllPolicy"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/PolicyRespList"
         404:
           description: "API not found"
           schema:
@@ -695,45 +685,9 @@ paths:
           description: "API not found"
           schema:
             $ref: "#/definitions/ErrorMessage"
-      security: []
-  
-  /tapping/{dpid}/stat/nonrealtime/{state}/policy/{policy_name}:
-    get: #1.4
-      tags:
-      - "statistics"
-      summary: "Enable NPB Statistics of Policy"
-      description: "Enalbe NPB Statistics of Policy"
-      operationId: "getEnablePolicyStatistics"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "dpid"
-        in: "path"
-        description: "dpid Name"
-        required: true
-        type: "string"
-      - name: "state"
-        in: "path"
-        description: "state Name"
-        required: true
-        type: "string"
-      - name: "policy_name"
-        in: "path"
-        description: "Policy Name"
-        required: true
-        type: "string"
-      responses:
-        200:
-          description: "Successful operation"
-          schema:
-            $ref: "#/definitions/EnablePolicyStatistics"
-        404:
-          description: "API not found"
-          schema:
-            $ref: "#/definitions/ErrorMessage"
-      security: []
+      security: []  
 
-/tapping/{dpid}/stat/nonrealtime/{time}/policy/{policy_name}:
+  /tapping/{dpid}/stat/nonrealtime/{time}/policy/{policy_name}:
     get: #1.3
       tags:
       - "statistics"
@@ -775,7 +729,7 @@ paths:
       - "statistics"
       summary: "Get NPB Non realtime Statistics of Policy"
       description: "Get NPB Non realtime Statistics of Policy"
-      operationId: "getPolicyStatisticsNonreal"
+      operationId: "getPolicyStatisticsDurationNonreal"
       produces:
       - "application/json"
       parameters:
@@ -850,7 +804,12 @@ paths:
         in: "path"
         required: true
         type: "string"
-        description: "dpid name"      
+        description: "dpid name" 
+      - name: "port_num"
+        in: "path"
+        required: true
+        type: "string"
+        description: "port number"      
       responses:
         200:
           description: "Successful operation"
@@ -887,7 +846,7 @@ definitions:
 
   DpidinfoObject:
     type: "object"
-    propeties:
+    properties:
       dpid:
         type: "string"
       ports:
@@ -897,7 +856,7 @@ definitions:
 
   DpidinfoObject2:
     type: "object"
-    propeties:
+    properties:
       dpid:
         type: "string"
       ports:
@@ -913,15 +872,17 @@ definitions:
       group_name:
         type: "string"
       dpid_info:
+        type: "array"
         items:
           $ref: "#/definitions/DpidinfoObject"
       type:
-        type: "sring"
+        type: "string"
 
   GetDpidinfoObject:
     type: "object"
-    propeties:
+    properties:
       dpid_info:
+        type: "array"
         items:
           $ref: "#/definitions/DpidinfoObject2"
       type:
@@ -931,8 +892,9 @@ definitions:
   
   GetGroupsObject:
     type: "object"
-    propeties:
+    properties:
       groups:
+        type: "array"
         items:
           $ref: "#/definitions/GetDpidinfoObject"
       type:
@@ -942,7 +904,7 @@ definitions:
   
   GetGroupObject:
     type: "object"
-    propeties:
+    properties:
       group:
         $ref: "#/definitions/GetDpidinfoObject"    
 
@@ -978,6 +940,7 @@ definitions:
       burst_size:
         type: "string"
       meter_id:
+        type: "array"
         items:
           $ref: "#/definitions/RateLimitMerterId"
 
@@ -985,6 +948,7 @@ definitions:
     type: "object"
     properties:
       rate_limits:
+        type: "array"
         items:
           $ref: "#/definitions/RateLimitRespObject"     
 
@@ -1014,6 +978,7 @@ definitions:
       filter_name:
         type: "string"
       match_value:
+        type: "array"
         items:
           $ref: "#/definitions/MatchObject"
 
@@ -1033,6 +998,7 @@ definitions:
     type: "object"
     properties:
       filters:
+        type: "array"
         items:
           $ref: "#/definitions/FilterObject"
   
@@ -1064,8 +1030,9 @@ definitions:
       rate_limit:
         type: "string"
       policy_action:
+        type: "array"
         items:
-          $ref: "PolicyActionObject"
+          $ref: "#/definitions/PolicyActionObject"
       policy_name:
         type: "string"      
 
@@ -1079,6 +1046,7 @@ definitions:
     type: "object"
     properties:
       policies:
+        type: "array"
         items:
           $ref: "#/definitions/PolicyObject"
   
@@ -1110,13 +1078,15 @@ definitions:
       policy_name:
         type: "string"
       policy_stats:
+        type: "array"
         items:
-          $ref:"#/definitions/PolicyStatisticsObject"
+          $ref: "#/definitions/PolicyStatisticsObject"
 
   ALLPolicyStatisticsRespList:
     type: "object"
     properties:
       policies_stats:
+        type: "array"
         items:
           $ref: "#/definitions/PolicyStatisticsList"
 
@@ -1152,6 +1122,7 @@ definitions:
       policy_name:
         type: "string"
       policy_stats:
+        type: "array"
         items:
           $ref: "#/definitions/PolicyStatisticsNonrealList"
   
@@ -1174,15 +1145,17 @@ definitions:
     properties:
       filter_name:
         type: "string"
-      stats:  
+      stats:
+        type: "array"
         items:
-          $ref: "/definitions/StatisticsObject"
+          $ref: "#/definitions/StatisticsObject"
 
   FilterStatsList:
     type: "object"
     properties:
       filter_stats:
-        itmes:
+        type: "array"
+        items:
           $ref: "#/definitions/FilterStatsObject"
 
   PolicyStatisticsDurationRespList:
@@ -1235,6 +1208,7 @@ definitions:
     type: "object"
     properties:
       port_stats:
+        type: "array"
         items:
           $ref: "#/definitions/PortStatistics"
 
@@ -1244,3 +1218,4 @@ definitions:
       port_stat:
         $ref: "#/definitions/PortStatistics"  
 
+  
